@@ -1,40 +1,60 @@
-Attribute VB_Name = "MÛdulo1"
+Attribute VB_Name = "M√≥dulo1"
 Sub Sort()
 
+    Dim ws As Worksheet
     Dim NDDPrint_Sum As Double
     
-    ' Remove o cabeÁalho
-    ' Range("A1:A9").EntireRow.Delete
+    Workbooks.Open (ThisWorkbook.Path & "\prefaturamento")
     
-    ' Ordena toda a tabela, se baseando na coluna "SÈrie"
-    With ActiveWorkbook.Worksheets("PrÈ-Faturamento").Sort
+    Application.DisplayAlerts = False
+
+    Worksheets("Resumo").Delete
+    
+    Application.DisplayAlerts = True
+    
+    ' Remove o cabe√ßalho
+    Range("A1:A9").EntireRow.Delete
+
+    ' Ordena toda a tabela, se baseando na coluna "S√©rie"
+    With ActiveWorkbook.Worksheets("Pr√©-Faturamento").Sort
         .SortFields.Clear
-        .SortFields.Add Key:=Range("Table26[[#All],[SÈrie]]"), SortOn:= _
+        .SortFields.Add Key:=Range("Table2[[#All],[S√©rie]]"), SortOn:= _
         xlSortOnValue, Order:=xlAscending, DataOption:=xlSortNormal
-        .SetRange Range("A1:AI160") ' TO-DO = Alterar esta linha de forma que pegue altomaticamente a quantidade de linhas, pois desta forma est· fixo.
+        .SetRange Range("A1:AI160") ' TO-DO = Alterar esta linha de forma que pegue altomaticamente a quantidade de linhas, pois desta forma est√° fixo.
         .Header = xlYes
         .Apply
     End With
 
-    ' Itera sobre cada cÈlula
-    For Each cell In Worksheets("PrÈ-Faturamento").Range("A1:A160").Cells ' TO-DO = Alterar esta linha de forma que pegue altomaticamente a quantidade de linhas, pois desta forma est· fixo.
+    Set ws = Worksheets("Pr√©-Faturamento")
+    lastRow = ws.Cells(ws.Rows.Count, "A").End(xlUp).Row ' acha a √∫ltima linha com conte√∫do na coluna A
+
+    ' Itera sobre cada c√©lula
+    'For Each cell In Worksheets("Pr√©-Faturamento").Range("A1:A160").Cells ' TO-DO = Alterar esta linha de forma que pegue altomaticamente a quantidade de linhas, pois desta forma est√° fixo.
+    For i = lastRow To 1 Step -1 ' de baixo para cima
     
-        'Se os 5 primeiros dÌgitos da cÈlula forem "S3096"
-        If Left(cell.Value, 5) = "S3096" Then
-            'MsgBox (Worksheets("PrÈ-Faturamento").Range("V" & cell.Row))
+        'Se os 5 primeiros d√≠gitos da c√©lula forem "S3096"
+        If Left(ws.Cells(i, 1).Value, 5) = "S3096" Or Left(ws.Cells(i, 1).Value, 5) = "S0000" Then
+        
             ' Soma todos os valores, gerando o total pago pelo software NDDPrint
-            NDDPrint_Sum = NDDPrint_Sum + Worksheets("PrÈ-Faturamento").Range("V" & cell.Row)
-        ElseIf Left(cell.Value, 7) = "TOTAIS:" Then
-            ' Remove a coluna "TOTAIS:", pois, ao organizar pela coluna "SÈrie", ela fica no meio dos seriais.
-            Range("V" & cell.Row).EntireRow.Delete
+            NDDPrint_Sum = NDDPrint_Sum + ws.Cells(i, 22).Value
+            
+            ws.Rows(i).Delete
+        
+        ElseIf Left(ws.Cells(i, 1).Value, 7) = "TOTAIS:" Then
+            ' Remove a coluna "TOTAIS:", pois, ao organizar pela coluna "S√©rie", ela fica no meio dos seriais.
+            ws.Rows(i).Delete
         End If
     
-    Next cell
+    Next i
     
-    'MsgBox (Round(NDDPrint_Sum, 2))
+    MsgBox (Round(NDDPrint_Sum, 2))
 
-    myValue = InputBox("Aqui È a MSG", "TÌtulo Teste", "1", 100, 100)
+    index = InputBox("Informe a linha inicial para come√ßar o rateio:", "T√≠tulo Teste", "1", 10, 10)
 
+    Workbooks.Open (ThisWorkbook.Path & "\04_SIMPRESS - Outsourcing.xlsm")
+    
+    Worksheets("ALI").Range("A" & index).Value = "Teste"
+    
+    
 End Sub
-
 
