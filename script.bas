@@ -5,6 +5,9 @@ Sub Sort()
     Dim NDDPrint_Sum As Double
     Dim prodPB_Sum As Long
     Dim prodColor_Sum As Long
+    Dim totalProd_Sum As Double
+    Dim totalLocacaoCusto As Double
+    Dim totalRateio As Double
     
     ' Variáveis para o rateio
     Dim filial As String
@@ -22,13 +25,8 @@ Sub Sort()
     
     Dim cCusto As Long
     
-    Dim dateValue As Variant
-    
     ' Debug
     MsgBox (Date)
-
-    ' Debug
-    MsgBox (dateValue)
     
     ' Abre a planilha do pré faturamento
     Workbooks.Open (ThisWorkbook.Path & "\prefaturamento")
@@ -129,36 +127,77 @@ Sub Sort()
         
         ' == Atribuições ==
         
+        
+        ' MsgBox ("Achei a serie: " + serie)
+        
+        Range("A" & index & ":M" & index).Interior.Color = RGB(215, 215, 215)
+        
         Worksheets("ALI").Range("A" & index).Value = filial ' Filial
         Worksheets("ALI").Range("B" & index).Value = dept ' Departamento
-        
         Worksheets("ALI").Range("C" & index).Value = equip ' Equip
         Worksheets("ALI").Range("D" & index).Value = serie ' Série
         
         Worksheets("ALI").Range("E" & index).Value = Date ' Data
         
         Worksheets("ALI").Range("F" & index).Value = prodPB ' Produção Preto e Branco
-        Worksheets("ALI").Range("G" & index).Value = Format(ValorUnitPB, "#,##0.0000") ' Valor Unitário Preto e Branco
+        Worksheets("ALI").Range("G" & index).Value = CDec(ValorUnitPB) ' Valor Unitário Preto e Branco
         Worksheets("ALI").Range("H" & index).Value = prodColor ' Produção Colorido
-        Worksheets("ALI").Range("I" & index).Value = Format(ValorUnitColor, "#,##0.0000") ' valor Unitário Preto e Branco
-        Worksheets("ALI").Range("J" & index).Value = Format(locacao, "#,##0.00") ' Valor Locação
+        Worksheets("ALI").Range("I" & index).Value = CDec(ValorUnitColor) ' valor Unitário Preto e Branco
         
-        Worksheets("ALI").Range("K" & index).Value = Format(valorTotal, "#,##0.00") ' Valor Total
+        'If serie = "0DKBB07K351PL3" Then
+        '    Worksheets("ALI").Range("J" & index).Value = CDec(locacao) / 2 ' Valor Locação
+        'Else
+        ' Worksheets("ALI").Range("J" & index).Value = CDec(locacao) ' Valor Locação
+        'End If
+        
+        Worksheets("ALI").Range("J" & index).Value = CDec(locacao) ' Valor Locação
+        Worksheets("ALI").Range("K" & index).Value = CDec(valorTotal) ' Valor Total
         
         Worksheets("ALI").Range("L" & index).Value = cCusto ' Centro de Custo
         
         prodPB_Sum = prodPB_Sum + prodPB
         prodColor_Sum = prodColor_Sum + prodColor
         
+        totalLocacaoCusto = totalLocacaoCusto + CDec(locacao)
+        
+        totalRateio = totalRateio + CDec(valorTotal)
+        
         index = index + 1
     
     Next i
     
-        ' colorRange = ""
-        Range("A" & index & ":L" & index).Interior.Color = RGB(192, 192, 192)
-        
+        ' Insere após a última linha as informações do NDDPrint
+        Worksheets("ALI").Range("L" & index).Value = cCusto ' Centro de Custo
+    
         ' Debugs
-        MsgBox (prodPB_Sum)
-        MsgBox (prodColor_Sum)
+        
+        MsgBox (index)
+        
+        ' MsgBox (prodPB_Sum)
+        ' MsgBox (prodColor_Sum)
+    
+        totalProd_Sum = prodPB_Sum + prodColor_Sum
+    
+        ' Altera a cor da linha abaixo da última para cinza
+        Range("A" & index & ":M" & index).Interior.Color = RGB(192, 192, 192)
+        
+        ' Insere o valor total da Produção Preto e Branco
+        Range("F" & index) = prodPB_Sum
+        Range("F" & index).Font.Bold = True
+         
+        ' Insere o valor total da Produção Colorido
+        Range("H" & index) = prodColor_Sum
+        Range("H" & index).Font.Bold = True
+        
+        ' Insere o valor total de ambas as Produções
+        Range("I" & index) = totalProd_Sum
+        Range("I" & index).Font.Bold = True
+        
+        ' Insere o valor total do custo por Locação
+        Range("J" & index) = Round(totalLocacaoCusto, 2)
+        Range("J" & index).Font.Bold = True
+        
+        Range("K" & index) = totalRateio
+        Range("K" & index).Font.Bold = True
         
 End Sub
