@@ -86,6 +86,7 @@ Sub Sort()
     'Workbooks("prefaturamento.xlsx").Worksheets("Pré-Faturamento")
  
     index = InputBox("Informe a linha inicial para começar o rateio:", "Título Teste", "1", 10, 10)
+    initialIndex = index
  
     ' Abre a planilha principal
     
@@ -164,8 +165,7 @@ Sub Sort()
             Worksheets("ALI").Range("K" & index).Value = CDec(valorTotal) / 2 ' Valor Total
             
             index = index + 1
-
-            'To-DO: Remover repetição de código
+        
             Worksheets("ALI").Range("A" & index).Value = filial ' Filial
             Worksheets("ALI").Range("B" & index).Value = "Produção" ' Departamento
             Worksheets("ALI").Range("C" & index).Value = "=" ' Equip
@@ -187,6 +187,7 @@ Sub Sort()
     Next i
         
         'To-DO: Remover repetição de código
+        
         Worksheets("ALI").Range("A" & index).Value = "SP" ' Filial
         Worksheets("ALI").Range("B" & index).Value = "Financeiro" ' Departamento
         Worksheets("ALI").Range("C" & index).Value = "NDDIGITAL" ' Equip
@@ -228,8 +229,8 @@ Sub Sort()
         
         Range("H" & index) = prodColor_Sum
         Range("H" & index).Font.Bold = True
-        
-        ' Insere o valor total de ambas as Produções
+
+        ' Insere o valor total de ambas As Produções
         Range("I" & index) = totalProd_Sum
         Range("I" & index).Font.Bold = True
         
@@ -238,4 +239,39 @@ Sub Sort()
         Range("J" & index).Font.Bold = True
         Range("K" & index) = totalRateio
         Range("K" & index).Font.Bold = True
+        
+        
+        lastRowPlan2 = Worksheets("Plan2").Cells(Worksheets("Plan2").Rows.Count, "A").End(xlUp).Row
+        
+        For i = 4 To lastRowPlan2
+        
+            sumAux = 0
+        
+            If Worksheets("Plan2").Range("A" & i).Value = "" Then
+                GoTo checkValidation
+            End If
+            
+            centroDeCusto = Worksheets("Plan2").Range("A" & i).Value
+            
+            For j = initialIndex To lastIndex
+            
+                If centroDeCusto = Worksheets("ALI").Cells(j, 12) Then
+                
+                    ' MsgBox (centroDeCusto & " - " & Worksheets("ALI").Cells(j, 12))
+                    
+                    sumAux = sumAux + Worksheets("ALI").Cells(j, 11)
+                    'MsgBox (sumAux)
+                
+                End If
+                    
+                Worksheets("Plan2").Cells(i, 2) = sumAux
+            
+            Next j
+    
+        Next i
+        
+checkValidation:
+
+    MsgBox ("Chegamos ao final sem erros!")
+    
 End Sub
