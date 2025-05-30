@@ -31,6 +31,10 @@ Sub Sort()
     ' Debug
     MsgBox (Date)
     
+    aa = Worksheets("BASE").Range("G3").Value
+    
+    MsgBox (aa)
+    
     ' Abre a planilha do pré faturamento
     Workbooks.Open (ThisWorkbook.Path & "\prefaturamento")
     
@@ -85,8 +89,9 @@ Sub Sort()
     'Workbooks("prefaturamento.xlsx").Worksheets("Pré-Faturamento").Copy _
     'Workbooks("prefaturamento.xlsx").Worksheets("Pré-Faturamento")
  
-    index = InputBox("Informe a linha inicial para começar o rateio:", "Título Teste", "1", 10, 10)
-    initialIndex = index
+    'index = InputBox("Informe a linha inicial para começar o rateio:", "Título Teste", "1", 10, 10)
+    index = aa
+    'initialIndex = aa
  
     ' Abre a planilha principal
     
@@ -206,7 +211,7 @@ Sub Sort()
         index = index + 1
         
         ' Insere após a última linha as informações do NDDPrint
-        Worksheets("ALI").Range("L" & index).Value = cCusto ' Centro de Custo
+        ' Worksheets("ALI").Range("L" & index).Value = cCusto ' Centro de Custo
         
         ' Debugs
         lastIndex = index - 1
@@ -240,6 +245,7 @@ Sub Sort()
         Range("K" & index) = totalRateio
         Range("K" & index).Font.Bold = True
         
+        Worksheets("BASE").Range("G3").Value = lastIndex + 3
         
         lastRowPlan2 = Worksheets("Plan2").Cells(Worksheets("Plan2").Rows.Count, "A").End(xlUp).Row
         
@@ -253,7 +259,7 @@ Sub Sort()
             
             centroDeCusto = Worksheets("Plan2").Range("A" & i).Value
             
-            For j = initialIndex To lastIndex
+            For j = index To lastIndex
             
                 If centroDeCusto = Worksheets("ALI").Cells(j, 12) Then
                 
@@ -270,6 +276,19 @@ Sub Sort()
     
         Next i
         
+        
+    '''''''''''''''' Não está funcionando ''''''''''''''''
+        
+    ' Remove o alerta referente ao fechamento da planilha de pré faturamento
+    Application.DisplayAlerts = False
+        
+        Workbooks(ThisWorkbook.Path & "\prefaturamento.xlsx").Close SaveChanges:=Fals
+    
+    ' Adiciona novamente o alerta referente ao fechamento da planilha de pré faturamento
+    Application.DisplayAlerts = True
+
+    
+
 checkValidation:
 
     MsgBox ("Chegamos ao final sem erros!")
