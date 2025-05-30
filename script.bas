@@ -50,18 +50,22 @@ Sub Sort()
     ' Remove o cabeçalho
     Range("A1:A9").EntireRow.Delete
  
+    Set ws = Worksheets("Pré-Faturamento")
+    lastRow = ws.Cells(ws.Rows.Count, "A").End(xlUp).Row ' acha a última linha com conteúdo na coluna A
+ 
+    With ActiveSheet
+        .ListObjects(1).Name = "Table"
+    End With
+ 
     ' Ordena toda a tabela, se baseando na coluna "Série"
     With ActiveWorkbook.Worksheets("Pré-Faturamento").Sort
         .SortFields.Clear
-        .SortFields.Add Key:=Range("Table2[[#All],[Série]]"), SortOn:= _
+        .SortFields.Add Key:=Range("Table[[#All],[Série]]"), SortOn:= _
         xlSortOnValue, Order:=xlAscending, DataOption:=xlSortNormal
-        .SetRange Range("A1:AI160") ' TO-DO = Alterar esta linha de forma que pegue altomaticamente a quantidade de linhas, pois desta forma está fixo.
+        .SetRange Range("A1:AI" & lastRow) ' TO-DO = Alterar esta linha de forma que pegue altomaticamente a quantidade de linhas, pois desta forma está fixo.
         .Header = xlYes
         .Apply
     End With
- 
-    Set ws = Worksheets("Pré-Faturamento")
-    lastRow = ws.Cells(ws.Rows.Count, "A").End(xlUp).Row ' acha a última linha com conteúdo na coluna A
  
     ' Itera sobre cada célula
     'For Each cell In Worksheets("Pré-Faturamento").Range("A1:A160").Cells ' TO-DO = Alterar esta linha de forma que pegue altomaticamente a quantidade de linhas, pois desta forma está fixo.
@@ -249,6 +253,14 @@ Sub Sort()
                 
         lastRowPlan2 = Worksheets("Plan2").Cells(Worksheets("Plan2").Rows.Count, "A").End(xlUp).Row
         
+        ' Remove o alerta referente ao fechamento da planilha de pré faturamento
+        Application.DisplayAlerts = False
+            
+        Workbooks("prefaturamento.xlsx").Close savechanges:=False '(or True)
+        
+        ' Adiciona novamente o alerta referente ao fechamento da planilha de pré faturamento
+        Application.DisplayAlerts = True
+        
         For i = 4 To lastRowPlan2
         
             sumAux = 0
@@ -275,20 +287,6 @@ Sub Sort()
             Next j
     
         Next i
-        
-        
-
-    '''''''''''''''' Não está funcionando ''''''''''''''''
-        
-    ' Remove o alerta referente ao fechamento da planilha de pré faturamento
-    Application.DisplayAlerts = False
-        
-        Workbooks(ThisWorkbook.Path & "\prefaturamento.xlsx").Close SaveChanges:=Fals
-    
-    ' Adiciona novamente o alerta referente ao fechamento da planilha de pré faturamento
-    Application.DisplayAlerts = True
-
-    
 
 checkValidation:
 
