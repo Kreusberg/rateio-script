@@ -168,7 +168,7 @@ Sub Sort()
         
         totalRateio = totalRateio + CDec(valorTotal)
         
-        If serie = "0DKBB07K351PL3" Then
+        If serie = "0DKBB07K351PL3" Or serie = "BRCSSD609W" Then
             
             Worksheets("ALI").Range("J" & index).Value = CDec(locacao) / 2 ' Valor Locação
             Worksheets("ALI").Range("K" & index).Value = CDec(valorTotal) / 2 ' Valor Total
