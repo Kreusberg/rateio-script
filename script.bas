@@ -1,6 +1,9 @@
 Attribute VB_Name = "Módulo1"
 Sub Sort()
  
+    ' Teste
+    Dim index As Long
+ 
     Dim ws As Worksheet
     Dim NDDPrint_Sum As Double
     Dim prodPB_Sum As Long
@@ -31,9 +34,9 @@ Sub Sort()
     ' Debug
     MsgBox (Date)
     
-    aa = Worksheets("BASE").Range("G3").Value
+    inicialLine = Worksheets("BASE").Range("G3").Value
     
-    MsgBox (aa)
+    MsgBox (inicialLine)
     
     ' Abre a planilha do pré faturamento
     Workbooks.Open (ThisWorkbook.Path & "\prefaturamento")
@@ -94,8 +97,8 @@ Sub Sort()
     'Workbooks("prefaturamento.xlsx").Worksheets("Pré-Faturamento")
  
     'index = InputBox("Informe a linha inicial para começar o rateio:", "Título Teste", "1", 10, 10)
-    index = aa
-    indexRateio = aa
+    index = inicialLine
+    indexRateio = inicialLine
  
     ' Abre a planilha principal
     
@@ -145,20 +148,9 @@ Sub Sort()
         
         ' MsgBox ("Achei a serie: " + serie)
         
-        Range("A" & index & ":M" & index).Interior.Color = RGB(215, 215, 215)
+        Call InsertValues(index, filial, dept, equip, serie, prodPB, CDec(ValorUnitPB), prodColor, CDec(ValorUnitColor), CDec(locacao), CDec(valorTotal), cCusto)
         
-        Worksheets("ALI").Range("A" & index).Value = filial ' Filial
-        Worksheets("ALI").Range("B" & index).Value = dept ' Departamento
-        Worksheets("ALI").Range("C" & index).Value = equip ' Equip
-        Worksheets("ALI").Range("D" & index).Value = serie ' Série
-        Worksheets("ALI").Range("E" & index).Value = Date ' Data
-        Worksheets("ALI").Range("F" & index).Value = prodPB ' Produção Preto e Branco
-        Worksheets("ALI").Range("G" & index).Value = CDec(ValorUnitPB) ' Valor Unitário Preto e Branco
-        Worksheets("ALI").Range("H" & index).Value = prodColor ' Produção Colorido
-        Worksheets("ALI").Range("I" & index).Value = CDec(ValorUnitColor) ' valor Unitário Preto e Branco
-        Worksheets("ALI").Range("J" & index).Value = CDec(locacao) ' Valor Locação
-        Worksheets("ALI").Range("K" & index).Value = CDec(valorTotal) ' Valor Total
-        Worksheets("ALI").Range("L" & index).Value = cCusto ' Centro de Custo
+        Range("A" & index & ":M" & index).Interior.Color = RGB(215, 215, 215)
         
         prodPB_Sum = prodPB_Sum + prodPB
         
@@ -170,45 +162,19 @@ Sub Sort()
         
         If serie = "0DKBB07K351PL3" Or serie = "BRCSSD609W" Then
             
-            Worksheets("ALI").Range("J" & index).Value = CDec(locacao) / 2 ' Valor Locação
-            Worksheets("ALI").Range("K" & index).Value = CDec(valorTotal) / 2 ' Valor Total
+            Call InsertValuesCaseDivision(index, prodPB / 2, prodColor / 2, CDec(locacao) / 2, CDec(valorTotal) / 2)
             
             index = index + 1
-        
-            Worksheets("ALI").Range("A" & index).Value = filial ' Filial
-            Worksheets("ALI").Range("B" & index).Value = "Produção" ' Departamento
-            Worksheets("ALI").Range("C" & index).Value = "=" ' Equip
-            Worksheets("ALI").Range("D" & index).Value = "=" ' Série
-            Worksheets("ALI").Range("E" & index).Value = Date ' Data
-            Worksheets("ALI").Range("F" & index).Value = prodPB ' Produção Preto e Branco
-            Worksheets("ALI").Range("G" & index).Value = CDec(ValorUnitPB) ' Valor Unitário Preto e Branco
-            Worksheets("ALI").Range("H" & index).Value = prodColor ' Produção Colorido
-            Worksheets("ALI").Range("I" & index).Value = CDec(ValorUnitColor) ' valor Unitário Preto e Branco
-            Worksheets("ALI").Range("J" & index).Value = CDec(locacao) / 2 ' Valor Locação
-            Worksheets("ALI").Range("K" & index).Value = CDec(valorTotal) / 2 ' Valor Total
-            Worksheets("ALI").Range("L" & index).Value = 1130201 ' Centro de Custo
+
+            Call InsertValues(index, filial, "Produção", "=", "=", prodPB / 2, CDec(ValorUnitPB), prodColor / 2, CDec(ValorUnitColor), CDec(locacao) / 2, CDec(valorTotal) / 2, 1130201)
         
         End If
         
         index = index + 1
         
-        
     Next i
-        
-        'To-DO: Remover repetição de código
-        
-        Worksheets("ALI").Range("A" & index).Value = "SP" ' Filial
-        Worksheets("ALI").Range("B" & index).Value = "Financeiro" ' Departamento
-        Worksheets("ALI").Range("C" & index).Value = "NDDIGITAL" ' Equip
-        Worksheets("ALI").Range("D" & index).Value = "S30960058180115" ' Série
-        Worksheets("ALI").Range("E" & index).Value = Date ' Data
-        Worksheets("ALI").Range("F" & index).Value = prodPB ' Produção Preto e Branco
-        Worksheets("ALI").Range("G" & index).Value = CDec(ValorUnitPB) ' Valor Unitário Preto e Branco
-        Worksheets("ALI").Range("H" & index).Value = prodColor ' Produção Colorido
-        Worksheets("ALI").Range("I" & index).Value = CDec(ValorUnitColor) ' valor Unitário Preto e Branco
-        Worksheets("ALI").Range("J" & index).Value = CDec(locacao) / 2 ' Valor Locação
-        Worksheets("ALI").Range("K" & index).Value = CDec(NDDPrint_Sum) ' Valor Total
-        Worksheets("ALI").Range("L" & index).Value = 1310301 ' Centro de Custo
+
+        Call InsertValues(index, "SP", "Financeiro", "NDDIGITAL", "S30960058180115", prodPB, CDec(ValorUnitPB), prodColor, CDec(ValorUnitColor), CDec(locacao) / 2, CDec(NDDPrint_Sum), 1310301)
         
         totalRateio = totalRateio + CDec(NDDPrint_Sum)
         
@@ -285,11 +251,37 @@ Sub Sort()
                 Worksheets("Plan2").Cells(i, 2) = sumAux
             
             Next j
-    
+                
         Next i
 
 checkValidation:
 
     MsgBox ("Chegamos ao final sem erros!")
     
+End Sub
+
+Sub InsertValues(index As Long, filial As String, departamento As String, equipamento As String, serie As String, prodPB As Long, ValorUnitPB As Double, prodColor As Long, ValorUnitColor As Double, locacao As Double, NDDPrint_Sum As Double, cCusto As Long)
+
+    Worksheets("ALI").Range("A" & index).Value = filial ' Filial
+    Worksheets("ALI").Range("B" & index).Value = departamento ' Departamento
+    Worksheets("ALI").Range("C" & index).Value = equipamento ' Equip
+    Worksheets("ALI").Range("D" & index).Value = serie ' Série
+    Worksheets("ALI").Range("E" & index).Value = Date ' Data
+    Worksheets("ALI").Range("F" & index).Value = prodPB ' Produção Preto e Branco
+    Worksheets("ALI").Range("G" & index).Value = ValorUnitPB ' Valor Unitário Preto e Branco
+    Worksheets("ALI").Range("H" & index).Value = prodColor ' Produção Colorido
+    Worksheets("ALI").Range("I" & index).Value = ValorUnitColor ' valor Unitário Preto e Branco
+    Worksheets("ALI").Range("J" & index).Value = locacao ' Valor Locação
+    Worksheets("ALI").Range("K" & index).Value = NDDPrint_Sum ' Valor Total
+    Worksheets("ALI").Range("L" & index).Value = cCusto ' Centro de Custo
+
+End Sub
+
+Sub InsertValuesCaseDivision(index As Long, prodPB As Long, prodColor As Long, locacao As Double, idk As Double)
+
+    Worksheets("ALI").Range("F" & index).Value = prodPB ' Produção Preto e Branco
+    Worksheets("ALI").Range("H" & index).Value = prodColor ' Produção Colorido
+    Worksheets("ALI").Range("J" & index).Value = locacao ' Valor Locação
+    Worksheets("ALI").Range("K" & index).Value = idk ' Valor Total
+
 End Sub
