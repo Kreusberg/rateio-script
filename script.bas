@@ -150,7 +150,7 @@ Sub Sort()
         
         Call InsertValues(index, filial, dept, equip, serie, prodPB, CDec(ValorUnitPB), prodColor, CDec(ValorUnitColor), CDec(locacao), CDec(valorTotal), cCusto)
         
-        Range("A" & index & ":M" & index).Interior.Color = RGB(215, 215, 215)
+        ' Range("A" & index & ":M" & index).Interior.Color = RGB(215, 215, 215)
         
         prodPB_Sum = prodPB_Sum + prodPB
         
@@ -274,6 +274,7 @@ Sub InsertValues(index As Long, filial As String, departamento As String, equipa
     Worksheets("ALI").Range("J" & index).Value = locacao ' Valor Locação
     Worksheets("ALI").Range("K" & index).Value = NDDPrint_Sum ' Valor Total
     Worksheets("ALI").Range("L" & index).Value = cCusto ' Centro de Custo
+    Range("A" & index & ":M" & index).Interior.Color = RGB(215, 215, 215)
 
 End Sub
 
@@ -283,5 +284,6 @@ Sub InsertValuesCaseDivision(index As Long, prodPB As Long, prodColor As Long, l
     Worksheets("ALI").Range("H" & index).Value = prodColor ' Produção Colorido
     Worksheets("ALI").Range("J" & index).Value = locacao ' Valor Locação
     Worksheets("ALI").Range("K" & index).Value = idk ' Valor Total
-
+    Range("A" & index & ":M" & index).Interior.Color = RGB(255, 255, 255)
+    
 End Sub
